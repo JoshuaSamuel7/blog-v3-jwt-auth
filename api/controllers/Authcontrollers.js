@@ -61,30 +61,34 @@ exports.postRegister = async (req, res) => {
 }
 exports.currentUser = async (req, res) => {
     try {
+        const userID = Object.keys(req.cookies)[0]; 
+        const token = req.cookies[userID];
 
-        const userID = Object.keys(req.cookies)[0];  // Extract the first key as userID
-
-        if (!userID) {
-            return res.status(400).json({ message: 'User ID not found in cookies.' });
+        if (!token) {
+            return res.status(401).json({ message: 'No token provided. Unauthorized access.' });
         }
 
-        const user = await User.findOne({ _id: userID });  // Use 'await' and correct key '_id'
-        if (!user) {
-            return res.status(404).json({ message: 'User not found.' });
-        }
+        jwt.verify(token, 'secret', async (err, decoded) => {
+            if (err) {
+                return res.status(401).json({ message: 'Invalid or expired token. Unauthorized access.' });
+            }
 
-        res.status(200).json({ user: user });
+            const user = await User.findOne({ _id: decoded.id });
+            if (!user) {
+                return res.status(404).json({ message: 'User not found.' });
+            }
+
+            res.status(200).json({ user: user });
+        });
     } catch (err) {
         console.error(err);
         return res.status(500).json({ message: 'Server error.' });
     }
 };
-
 exports.logoutUser = (req, res) => {
     const userID = Object.keys(req.cookies)[0];
 
     if (userID) {
-        // Clear the cookie by setting maxAge to 0
         res.clearCookie(userID, { path: '/' });
         console.log("Logout Success");
         return res.status(200).json({ message: "Logout success" });
