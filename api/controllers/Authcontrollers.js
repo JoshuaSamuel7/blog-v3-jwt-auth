@@ -86,7 +86,6 @@ exports.logoutUser = (req, res) => {
     if (userID) {
         // Clear the cookie by setting maxAge to 0
         res.clearCookie(userID, { path: '/' });
-        req.session.destroy();
         console.log("Logout Success");
         return res.status(200).json({ message: "Logout success" });
     } else {
