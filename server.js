@@ -12,8 +12,6 @@ app.use(cors(
         credentials:true
     }
 ))
-const passport = require('./config/passport');
-
 const postRoutes=require('./routes/postRoutes');
 const authRoutes=require('./routes/authRoutes');
 connectDB();
