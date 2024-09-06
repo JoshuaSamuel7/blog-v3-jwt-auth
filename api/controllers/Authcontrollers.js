@@ -5,9 +5,9 @@ const bcrypt = require('bcrypt');
 exports.postLogin = async (req, res) => {
     try {
         const { username, password } = req.body;
-        console.log(username,password);
+        console.log(username, password);
         const user = await User.findOne({ username });
-        
+
         if (!user) {
             return res.status(400).json({ message: "User not Found" });
         }
@@ -19,14 +19,17 @@ exports.postLogin = async (req, res) => {
 
         const payload = { id: user.id, username: user.username };
         const token = jwt.sign(payload, "secret", { expiresIn: '1h' });
-        res.cookie(user.id,token,{
-            path:'/',
+        res.cookie(user.id, token, {
+            path: '/',
             maxAge: 1000 * 60 * 15,
-            httpOnly: true,});
-        return res.status(200).json({ message: 'Login successful!', token: token, user:user});
+            httpOnly: true,
+            secure: true,
+            sameSite:'None',
+        });
+        return res.status(200).json({ message: 'Login successful!', token: token, user: user });
     } catch (error) {
         console.log(error);
-        
+
         return res.status(500).json({ message: "Internal Server Error" });
     }
 }
@@ -36,8 +39,8 @@ exports.postRegister = async (req, res) => {
     try {
         const { name, username, password, mobile } = req.body;
         const checkuser = await User.findOne({ username });
-        console.log( name, username, password, mobile);
-        
+        console.log(name, username, password, mobile);
+
         if (checkuser) {
             return res.status(400).json({ message: "User already exists" });
         }
@@ -77,11 +80,11 @@ exports.currentUser = async (req, res) => {
     }
 };
 
-exports.logoutUser=(req,res)=>{
-    const userID = Object.keys(req.cookies)[0]; 
+exports.logoutUser = (req, res) => {
+    const userID = Object.keys(req.cookies)[0];
     console.log(userID);
     const token = req.cookies[userID];
-    res.cookie(userID,token,{path:"/",maxAge:1000,httpOnly: true})
+    res.cookie(userID, token, { path: "/", maxAge: 1000, httpOnly: true })
     console.log("Logout Success");
     res.status(200).json("Logout success");
 }
