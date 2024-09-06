@@ -82,9 +82,13 @@ exports.currentUser = async (req, res) => {
 
 exports.logoutUser = (req, res) => {
     const userID = Object.keys(req.cookies)[0];
-    console.log(userID);
-    const token = req.cookies[userID];
-    res.cookie(userID, token, { path: "/", maxAge: 1000, httpOnly: true })
-    console.log("Logout Success");
-    res.status(200).json("Logout success");
-}
+
+    if (userID) {
+        // Clear the cookie by setting maxAge to 0
+        res.clearCookie(userID, { path: '/' });
+        console.log("Logout Success");
+        return res.status(200).json({ message: "Logout success" });
+    } else {
+        return res.status(400).json({ message: "No active session found" });
+    }
+};
