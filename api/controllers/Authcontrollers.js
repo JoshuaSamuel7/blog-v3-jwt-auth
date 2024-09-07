@@ -85,12 +85,19 @@ exports.currentUser = async (req, res) => {
         return res.status(500).json({ message: 'Server error.' });
     }
 };
-exports.logoutUser = (req, res) => {
-    const userID = Object.keys(req.cookies)[0];
-    const token=req.cookies[userID];
+exports.logoutUser = async (req, res) => {
+    const userID = await Object.keys(req.cookies)[0];
+    const token=await req.cookies[userID];
     if (userID) {
-        res.cookie(userID, token,{ path: '/',maxAge:1000 });
+        await res.cookie(userID, '', { 
+            path: '/', 
+            maxAge: 0, 
+            httpOnly: true, 
+            secure: true, 
+            sameSite: 'None' 
+        });        
         console.log("Logout Success");
+        console.log(req.cookies);
         return res.status(200).json({ message: "Logout success" });
     } else {
         return res.status(400).json({ message: "No active session found" });
