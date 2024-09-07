@@ -89,7 +89,7 @@ exports.logoutUser = async (req, res) => {
     const userID = await Object.keys(req.cookies)[0];
     const token=await req.cookies[userID];
     if (userID) {
-        await res.cookie(userID, '', { 
+        await res.cookie(userID, token, { 
             path: '/', 
             maxAge: 0, 
             httpOnly: true, 
