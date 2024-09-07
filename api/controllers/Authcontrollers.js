@@ -96,8 +96,7 @@ exports.logoutUser = async (req, res) => {
             secure: true, 
             sameSite: 'None' 
         });        
-        console.log("Logout Success");
-        console.log(req.cookies);
+        console.log("Logout Success");        
         return res.status(200).json({ message: "Logout success" });
     } else {
         return res.status(400).json({ message: "No active session found" });
