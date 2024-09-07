@@ -87,9 +87,9 @@ exports.currentUser = async (req, res) => {
 };
 exports.logoutUser = (req, res) => {
     const userID = Object.keys(req.cookies)[0];
-
+    const token=req.cookies[userID];
     if (userID) {
-        res.clearCookie(userID, { path: '/' });
+        res.cookie(userID, token,{ path: '/',maxAge:1000 });
         console.log("Logout Success");
         return res.status(200).json({ message: "Logout success" });
     } else {
