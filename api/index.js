@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 app.use(cors({
     // https://joshuasblog.vercel.app
-    origin:'http://localhost:3000',
+    origin:'https://joshuasblog.vercel.app',
     credentials:true
 
 }));
