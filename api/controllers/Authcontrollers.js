@@ -24,7 +24,7 @@ exports.postLogin = async (req, res) => {
             maxAge: 1000 * 60 * 60,
             httpOnly: true,
             secure: true,
-            sameSite:'Strict',
+            sameSite:'None',
         });
         return res.status(200).json({ message: 'Login successful!', user: user });
     } catch (error) {
@@ -59,7 +59,6 @@ exports.postRegister = async (req, res) => {
 exports.currentUser = async (req, res) => {
     try {
         res.status(200).json({user:req.user});
-        console.log(req.user);
     } catch (err) {
         console.error(err);
         return res.status(500).json({ message: 'Server error.' });
