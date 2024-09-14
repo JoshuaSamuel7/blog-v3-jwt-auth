@@ -66,7 +66,10 @@ exports.currentUser = async (req, res) => {
 };
 
 exports.logoutUser = async (req, res) => {
-    res.cookie("jwt", " ", { 
+    const token=req.cookies.jwt;
+    console.log(token);
+    
+    res.cookie("jwt", token, { 
         path: '/', 
         maxAge: 0, 
         httpOnly: true, 
