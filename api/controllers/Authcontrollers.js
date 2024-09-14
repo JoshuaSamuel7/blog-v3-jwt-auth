@@ -66,6 +66,12 @@ exports.currentUser = async (req, res) => {
 };
 
 exports.logoutUser = async (req, res) => {
-        res.cookie('jwt', '', { maxAge: 1 }); 
+    res.cookie("jwt", " ", { 
+        path: '/', 
+        maxAge: 0, 
+        httpOnly: true, 
+        secure: true, 
+        sameSite: 'None' 
+    });
         res.json({ message: 'Logged out successfully!' });
 };
