@@ -58,12 +58,13 @@ exports.postRegister = async (req, res) => {
 }
 exports.currentUser = async (req, res) => {
     try {
-        res.status(200).json("Cookie Sent")
+        res.status(200).json(req.user);
     } catch (err) {
         console.error(err);
         return res.status(500).json({ message: 'Server error.' });
     }
 };
+
 exports.logoutUser = async (req, res) => {
     router.post('/logout', (req, res) => {
         res.cookie('jwt', '', { maxAge: 1 }); // Clear the cookie
