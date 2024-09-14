@@ -5,6 +5,6 @@ const authControllers=require('../controllers/Authcontrollers');
 
 router.post("/login",authControllers.postLogin);
 router.post("/register",authControllers.postRegister);
-router.get("/current_user",authControllers.currentUser);
-router.get("/logout",authControllers.logoutUser);
+router.get("/current_user",passport.authenticate('jwt', { session: false }),authControllers.currentUser);
+router.get("/logout",passport.authenticate('jwt', { session: false }),authControllers.logoutUser);
 module.exports=router;

@@ -3,6 +3,8 @@ const connectDB = require('./config/db');
 const app=express();
 const cors=require('cors');
 const cookieParser=require('cookie-parser');
+const passport=require('./config/passport');
+app.use(passport.initialize());
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));

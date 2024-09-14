@@ -17,29 +17,26 @@ exports.postLogin = async (req, res) => {
             return res.status(400).json({ message: "Invalid Credentials!" });
         }
 
-        const payload = { id: user.id, username: user.username };
-        const token = jwt.sign(payload, "secret", { expiresIn: '1h' });
-        res.cookie(user.id, token, {
+        const payload = { id: user._id, username: user.username };
+        const token = jwt.sign(payload,  process.env.SECRET, { expiresIn: '1h' });
+        res.cookie('jwt', token, {
             path: '/',
-            maxAge: 1000 * 60 * 15,
+            maxAge: 1000 * 60 * 60,
             httpOnly: true,
             secure: true,
-            sameSite:'None',
+            sameSite:'Strict',
         });
-        return res.status(200).json({ message: 'Login successful!', token: token, user: user });
+        return res.status(200).json({ message: 'Login successful!', user: user });
     } catch (error) {
         console.log(error);
-
         return res.status(500).json({ message: "Internal Server Error" });
     }
 }
 
-// Registration Route
 exports.postRegister = async (req, res) => {
     try {
         const { name, username, password, mobile } = req.body;
         const checkuser = await User.findOne({ username });
-        console.log(name, username, password, mobile);
 
         if (checkuser) {
             return res.status(400).json({ message: "User already exists" });
@@ -61,44 +58,15 @@ exports.postRegister = async (req, res) => {
 }
 exports.currentUser = async (req, res) => {
     try {
-        const userID = Object.keys(req.cookies)[0]; 
-        const token = req.cookies[userID];
-
-        if (!token) {
-            return res.status(401).json({ message: 'No token provided. Unauthorized access.' });
-        }
-
-        jwt.verify(token, 'secret', async (err, decoded) => {
-            if (err) {
-                return res.status(401).json({ message: 'Invalid or expired token. Unauthorized access.' });
-            }
-
-            const user = await User.findOne({ _id: decoded.id });
-            if (!user) {
-                return res.status(404).json({ message: 'User not found.' });
-            }
-
-            res.status(200).json({ user: user });
-        });
+        res.status(200).json("Cookie Sent")
     } catch (err) {
         console.error(err);
         return res.status(500).json({ message: 'Server error.' });
     }
 };
 exports.logoutUser = async (req, res) => {
-    const userID = await Object.keys(req.cookies)[0];
-    const token=await req.cookies[userID];
-    if (userID) {
-        await res.cookie(userID, token, { 
-            path: '/', 
-            maxAge: 0, 
-            httpOnly: true, 
-            secure: true, 
-            sameSite: 'None' 
-        });        
-        console.log("Logout Success");        
-        return res.status(200).json({ message: "Logout success" });
-    } else {
-        return res.status(400).json({ message: "No active session found" });
-    }
+    router.post('/logout', (req, res) => {
+        res.cookie('jwt', '', { maxAge: 1 });
+        res.json({ message: 'Logged out successfully!' });
+      });
 };
