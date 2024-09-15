@@ -69,7 +69,7 @@ exports.logoutUser = async (req, res) => {
     const token=req.cookies.jwt;
     console.log(token);
     
-    res.cookie("jwt", token, { 
+    res.cookie("jwt", "", { 
         path: '/', 
         maxAge: 0, 
         expires: new Date(0),
@@ -77,5 +77,5 @@ exports.logoutUser = async (req, res) => {
         secure: true, 
         sameSite: 'None' 
     });
-        res.json({ message: 'Logged out successfully!' });
+        res.status(200).json({ message: 'Logged out successfully!' });
 };
